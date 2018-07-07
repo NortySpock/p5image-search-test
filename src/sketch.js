@@ -12,6 +12,8 @@ var distThreshold = 50;
 var tgtX = 0;
 var tgtY = 0;
 
+var searchPercent = 0;
+
 //var blobs = [];
 
 var paintColor;
@@ -20,13 +22,17 @@ function setup() {
   canvas = createCanvas(canvasWidth, canvasHeight);
   canvas.parent('sketch-holder');
   capture = createCapture(VIDEO);
-  capture.parent('video-holder');
+  //capture.parent('video-holder');
   capture.size(canvasWidth, canvasHeight);
   //pixelDensity(1);
   capture.hide();
   trackColor = color(255, 0, 0);
   paintColor = color(0,0,255);
   //frameRate(3);
+  searchPercent = 0;
+  
+  var searchDom = document.getElementById("search-status");
+  searchDom.innerHTML = "Searching paused."
 
 }
 
@@ -65,7 +71,7 @@ function draw() {
   fill(paintColor)
   if(tgtX + tgtY > 0)
   {
-    ellipse(tgtX, tgtY, 3, 3)
+    ellipse(tgtX, tgtY, 10, 10)
   }
   
 }
@@ -82,16 +88,34 @@ function distSq( x1,   y1,   z1,   x2,   y2,   z2) {
   return d;
 }
 
-function mousePressed() {
-  var previousRed = 0;
-  for(var x = 0; x < canvasWidth;x++)
+function keyPressed() {
+  if (keyCode === BACKSPACE) 
   {
-    for(var y = 0; y < canvasHeight; y++)
+    var searchDom = document.getElementById("search-status");
+    searchDom.innerHTML = "Searching...";
+    
+    expensiveSearch();
+    
+    var searchDom = document.getElementById("search-status");
+    searchDom.innerHTML = "Searching paused."
+  }
+}
+
+function expensiveSearch(){
+  var startTime = millis();
+  
+  //muliplied by 4 to cut down on the search space. It's still expensive.
+  var previousRed = 0;
+  var previousOther = 255*2;
+  for(var x = 0; x < canvasWidth;x+=4)
+  {
+    for(var y = 0; y < canvasHeight; y+=4)
     {
       
       //let's hardcode check for red
       var redValue = red(canvas.get(x,y));
-      if(redValue > previousRed) //higher
+      var other = green(canvas.get(x,y))+blue(canvas.get(x,y));
+      if(redValue > previousRed && other < previousOther) //higher and more red
       {
         previousRed = redValue;
         tgtX = x;
@@ -99,30 +123,19 @@ function mousePressed() {
         console.log(x+","+y+"|red:",redValue)
       } else {
         console.log(x+","+y);
-      }
-        
-      
-      // currentPixel = canvas.get(x,y);
-      // var r1 = red(currentPixel);
-      // var g1 = green(currentPixel);
-      // var b1 = blue(currentPixel);
-      // var r2 = red(trackColor);
-      // var g2 = green(trackColor);
-      // var b2 = blue(trackColor);
-      
-      // var d = distSq(r1,g1,b1,r2,g2,b2);
-      
-      //remember you can adjust this color threshold as needed.
-      // if (d < threshold*threshold) {
-        // stroke(255);
-        // strokeWeight(1);
-        // point(x, y);
-        // tgtX += x;
-        // tgtY += y;
-        // count++;
-      // }
-      
+      }       
     }
   }
+  
+  var endTime = millis();
+  console.log("Search took "+(endTime-startTime)/1000+" seconds.")
+  
+
+  
+}
+
+
+function mousePressed() {
+  
   
 }
