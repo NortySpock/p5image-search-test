@@ -73,6 +73,7 @@ function expensiveSearch(){
   //muliplied by 4 to cut down on the search space. It's still expensive.
   var previousRed = 0;
   var previousOther = 255*2;
+  var lowthr = 100;
   for(var x = 0; x < canvasWidth;x+=4)
   {
     for(var y = 0; y < canvasHeight; y+=4)
@@ -80,8 +81,7 @@ function expensiveSearch(){
       
       //let's hardcode check for red
       var redValue = red(canvas.get(x,y));
-      var other = green(canvas.get(x,y))+blue(canvas.get(x,y));
-      if(redValue > previousRed && other < previousOther) //higher and more red
+      if(redValue > previousRed && green(canvas.get(x,y)) < lowthr && blue(canvas.get(x,y)) < lowthr ) //higher and more red
       {
         previousRed = redValue;
         tgtX = x;
