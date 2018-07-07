@@ -1,0 +1,5 @@
+Testing out image color search in p5.js
+
+The performance is really bad and the results aren't hot either. 
+
+This is probably due my very naive implementation, but hey, it was an interesting project.
