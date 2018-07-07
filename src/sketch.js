@@ -12,28 +12,17 @@ var distThreshold = 50;
 var tgtX = 0;
 var tgtY = 0;
 
-var searchPercent = 0;
-
-//var blobs = [];
-
 var paintColor;
 
 function setup() {
   canvas = createCanvas(canvasWidth, canvasHeight);
   canvas.parent('sketch-holder');
   capture = createCapture(VIDEO);
-  //capture.parent('video-holder');
   capture.size(canvasWidth, canvasHeight);
-  //pixelDensity(1);
   capture.hide();
   trackColor = color(255, 0, 0);
-  paintColor = color(0,0,255);
-  //frameRate(3);
-  searchPercent = 0;
+  paintColor = color(0,255,0);
   
-  var searchDom = document.getElementById("search-status");
-  searchDom.innerHTML = "Searching paused."
-
 }
 
 function draw() {
@@ -41,13 +30,7 @@ function draw() {
   image(capture, 0, 0, canvasWidth, canvasHeight);
   capture.loadPixels()
   
-
-  
   var count = 0;
-  
-  
-  
- 
   
   //paint crosshairs
   stroke(paintColor);
@@ -56,17 +39,6 @@ function draw() {
   var yhair = canvasHeight/2
   line(0, yhair, canvasWidth, yhair);
   
-  //remember you can adjust the color threshold if needed
-  // if (count > 0) 
-  // { 
-    // tgtX = tgtX / count;
-    // tgtY = tgtY / count;
-    // Draw a circle at the tracked pixel
-    // fill(paintColor);
-    // strokeWeight(4.0);
-    // stroke(0);
-    // ellipse(tgtX, tgtY, 4, 4);
-  // }
   
   fill(paintColor)
   if(tgtX + tgtY > 0)
@@ -91,13 +63,7 @@ function distSq( x1,   y1,   z1,   x2,   y2,   z2) {
 function keyPressed() {
   if (keyCode === BACKSPACE) 
   {
-    var searchDom = document.getElementById("search-status");
-    searchDom.innerHTML = "Searching...";
-    
     expensiveSearch();
-    
-    var searchDom = document.getElementById("search-status");
-    searchDom.innerHTML = "Searching paused."
   }
 }
 
@@ -129,13 +95,4 @@ function expensiveSearch(){
   
   var endTime = millis();
   console.log("Search took "+(endTime-startTime)/1000+" seconds.")
-  
-
-  
-}
-
-
-function mousePressed() {
-  
-  
 }
